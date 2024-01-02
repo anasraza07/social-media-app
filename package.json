@@ -1,12 +1,17 @@
 {
-  "name": "3.react-router",
+  "name": "social-media-app",
   "version": "1.0.0",
+  "engines": {
+    "npm": "10.1.0",
+    "node": "18.18.0"
+  },
   "description": "",
   "main": "server.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.mjs",
-    "dev": "nodemon server.mjs"
+    "dev": "nodemon server.mjs",
+    "build": "react-scripts build"
   },
   "author": "",
   "license": "ISC",
