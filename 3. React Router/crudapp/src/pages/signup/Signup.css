@@ -1,0 +1,13 @@
+.password-error {
+    color: red;
+    font-size: 0.8rem;
+}
+
+.alert-message {
+    font-size: 0.9rem;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9rem;
+}

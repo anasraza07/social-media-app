@@ -1,0 +1,10 @@
+.post {
+    margin: 2rem;
+    padding: 1.5rem;
+    box-shadow: 0px 0px 10px black;
+    border-radius: 10px;
+}
+
+.post h2 {
+    font-size: 2rem;
+}
