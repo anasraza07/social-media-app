@@ -78,6 +78,7 @@ router.post("/post", async (req, res) => {
         // _id: "48346932659432659743265" // database will issue this unique id itself
         title: req.body.title,
         text: req.body.text,
+        authorEmail: req.body.decoded.email,
         createdOn: new Date()
     }
     try {

@@ -43,6 +43,7 @@ const Signup = () => {
                 password: passwordInputRef.current.value
             })
             console.log(axiosResponse.data);
+            window.location.href = "/login"
             setAlertMessage(axiosResponse.data.message)
 
         } catch (e) {

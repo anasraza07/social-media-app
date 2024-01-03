@@ -135,6 +135,7 @@ const Home = () => {
                                 </form>
                             ) : (
                                 <div>
+                                    <p>{post.authorEmail}</p>
                                     <h2>{post.title}</h2>
                                     <p>{post.text}</p>
                                     <button onClick={() => {
@@ -144,9 +145,6 @@ const Home = () => {
                                     <button onClick={() => deletePostHandler(post._id)}>Delete</button>
                                 </div>
                             )}
-
-
-
                         </div>
                     )
                 })}

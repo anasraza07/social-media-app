@@ -7,7 +7,7 @@ const About = () => {
 
     return <div>
         <h1>About Page</h1>
-        <p>{JSON.stringify(state)}</p>
+        {/* <p>{JSON.stringify(state)}</p> */}
     </div>
 }
 

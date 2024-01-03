@@ -37,7 +37,7 @@ const Login = () => {
         <div>
             <h1>Login Page</h1>
             {/* <h2>{state.name} <button onClick={changeNameHandler}>Change name</button></h2> */}
-            {JSON.stringify(state)}
+            {/* JSON.stringify(state) */}
             <form id="loginForm" onSubmit={loginSubmitHandler}>
                 <label htmlFor="emailInput">Email: </label>
                 <input type="email" id="emailInput" ref={emailInputRef} required />
