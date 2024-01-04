@@ -1,6 +1,7 @@
-import { useRef, useContext } from "react";
+import { useRef, useContext, useState } from "react";
 import "./Login.css"
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import { GlobalContext } from "../../context/Context";
 import { baseUrl } from "../../core";
@@ -10,6 +11,8 @@ const Login = () => {
 
     const emailInputRef = useRef(null);
     const passwordInputRef = useRef(null);
+
+    const [alertMessage, setAlertMessage] = useState(null);
 
     const loginSubmitHandler = async (e) => {
         e.preventDefault();
@@ -22,6 +25,29 @@ const Login = () => {
                 withCredentials: true
             })
             console.log(response.data)
+            setAlertMessage(response.data.message)
+            // let timerInterval;
+            // Swal.fire({
+            //     // title: "Auto close alert!",
+            //     html: "Login Successful",
+            //     timer: 1000,
+            //     timerProgressBar: true,
+            //     didOpen: () => {
+            //         Swal.showLoading();
+            //         // const timer = Swal.getPopup().querySelector("b");
+            //         timerInterval = setInterval(() => {
+            //             // timer.textContent = `${Swal.getTimerLeft()}`;
+            //         }, 100);
+            //     },
+            //     willClose: () => {
+            //         clearInterval(timerInterval);
+            //     }
+            // }).then((result) => {
+            //     /* Read more about handling dismissals below */
+            //     if (result.dismiss === Swal.DismissReason.timer) {
+            //         console.log("I was closed by the timer");
+            //     }
+            // });
             setTimeout(() => {
                 dispatch({
                     type: "USER_LOGIN",
@@ -46,6 +72,7 @@ const Login = () => {
                 <input type="password" id="passwordInput" ref={passwordInputRef} required />
                 <br />
                 <button type="submit">Login</button>
+                {alertMessage && <p>{alertMessage}</p>}
             </form>
         </div>
     )

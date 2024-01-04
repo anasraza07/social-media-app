@@ -1,10 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+
 import axios from "axios";
-import "./Home.css"
+import "./Profile.css"
 
 import { baseUrl } from "../../core";
+import { GlobalContext } from "../../context/Context";
 
-const Home = () => {
+const Profile = () => {
+    const { state, dispatch } = useContext(GlobalContext)
+
     const postTitleInputRef = useRef(null);
     const postTextInputRef = useRef(null);
 
@@ -12,26 +17,38 @@ const Home = () => {
     const [alertMessage, setAlertMessage] = useState(null);
     const [allPosts, setAllPosts] = useState([]);
     const [toggleRefresh, setToggleRefresh] = useState(false);
-    // const [editAlertMessage, setEditAlertMessage] = useState(false);
+    const [profile, setProfile] = useState({});
 
+    const { userId } = useParams()
 
     const getAllPosts = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`${baseUrl}/api/v1/feed`, {
+            const response = await axios.get(`${baseUrl}/api/v1/posts?_id=${userId || ""}`, {
                 withCredentials: true
             });
             console.log(response.data)
             setIsLoading(false)
-            setAllPosts(response.data.data)
+            setAllPosts(response.data)
         } catch (e) {
             console.log(e.response.data)
             setIsLoading(false)
         }
     }
 
+    const getProfile = async () => {
+        try {
+            const response = await axios.get(`${baseUrl}/api/v1/profile/${userId || ""}`)
+            console.log(response.data)
+            setProfile(response.data.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     useEffect(() => {
         getAllPosts();
+        getProfile()
     }, [toggleRefresh])
 
     const submitHandler = async (e) => {
@@ -94,9 +111,15 @@ const Home = () => {
 
     return (
         <div>
-            <h1>Home Page (Your Feed)</h1>
+            <h1>Profile Page</h1>
+            <div className="banner">
+                <div className="bannerImg"></div>
+                <div className="profileImg"></div>
+                <div className="profileName">
+                    <h2> {profile?.firstName} {profile?.lastName} </h2>
+                </div>
+            </div>
             <form onSubmit={submitHandler}>
-                <h2 style={{ textAlign: "center", margin: "10px 0" }}>Publish Your Post</h2>
                 <label htmlFor="postTitleInput">Post Title:</label>
                 <input type="text" id="postTitleInput" ref={postTitleInputRef} minLength={2} maxLength={50} required />
                 <br />
@@ -151,4 +174,4 @@ const Home = () => {
     )
 }
 
-export default Home;
+export default Profile;

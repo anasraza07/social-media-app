@@ -21,6 +21,7 @@ router.use((req, res, next) => { // JWT
             firstName: decoded.firstName,
             lastName: decoded.lastName,
             email: decoded.email,
+            _id: decoded._id,
             isAdmin: decoded.isAdmin
         };
 
@@ -33,6 +34,7 @@ router.use((req, res, next) => { // JWT
 })
 
 router.use(postRouter) // Secure apis
+router.use(feedRouter) // Secure apis
 
 router.use("/ping", (req, res) => {
     res.send("OK");

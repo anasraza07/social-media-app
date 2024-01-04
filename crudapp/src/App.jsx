@@ -4,7 +4,7 @@ import axios from "axios";
 import "./App.css"
 
 import Home from "./pages/home/Home";
-import About from "./pages/about/About";
+import Profile from "./pages/profile/Profile";
 import Chat from "./pages/chat/Chat";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
@@ -13,12 +13,20 @@ import splashScreen from "./assets/splash-screen.gif"
 import { GlobalContext } from "./context/Context";
 import { baseUrl } from "./core";
 
-
 function App() {
   const { state, dispatch } = useContext(GlobalContext)
   const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
+    axios.interceptors.request.use(
+      function (config) {
+        config.withCredentials = true;
+        return config;
+      }, function (error) {
+        // Do something with request error
+        return Promise.reject(error);
+      });
+
     const checkLoginStatus = async () => {
       try {
         const response = await axios.get(`${baseUrl}/api/v1/profile`, {
@@ -58,14 +66,13 @@ function App() {
 
   return (
     <div>
-
       {/* admin routes */}
       {state.isLogin === true && state.role === "admin" ? (
         <div>
           <nav>
             <ul className="authorized-ul">
               <li><Link to={"/"}>Admin Home</Link></li>
-              <li><Link to={"/about"}>Admin About</Link></li>
+              <li><Link to={"/profile"}>Admin Profile</Link></li>
               <li><Link to={"/chat"}>Admin Chat</Link></li>
               {state.user.email}
               <li className="logout" onClick={logoutSubmitHandler}><Link>Logout</Link></li>
@@ -74,7 +81,8 @@ function App() {
 
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="about" element={<About />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile/:userId" element={<Profile />} />
             <Route path="chat" element={<Chat />} />
 
             <Route path="*" element={<Navigate to="/" replace={true} />} />
@@ -88,7 +96,7 @@ function App() {
           <nav>
             <ul className="authorized-ul">
               <li><Link to={"/"}>Home</Link></li>
-              <li><Link to={"/about"}>About</Link></li>
+              <li><Link to={"/profile"}>Profile</Link></li>
               <li><Link to={"/chat"}>Chat</Link></li>
               {state.user.email}
               <li className="logout" onClick={logoutSubmitHandler}><Link>Logout</Link></li>
@@ -97,7 +105,8 @@ function App() {
 
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="about" element={<About />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile/:userId" element={<Profile />} />
             <Route path="chat" element={<Chat />} />
 
             <Route path="*" element={<Navigate to="/" replace={true} />} />

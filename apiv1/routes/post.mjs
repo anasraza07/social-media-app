@@ -5,9 +5,9 @@ import { ObjectId } from "mongodb";
 import { userCollection } from "./auth.mjs";
 
 const db = client.db("cruddb");
-const col = db.collection("posts");
+export const col = db.collection("posts");
 
-let router = express.Router()
+let router = express.Router();
 
 // GET /api/v1/post/:userId/:postId
 router.get("/post/:postId", async (req, res) => {
@@ -43,13 +43,20 @@ router.get("/post/:postId", async (req, res) => {
     }
 })
 
-// GET /api/v1/posts/:userId
+// GET /api/v1/posts?id=userId
 router.get("/posts", async (req, res) => {
-    const cursor = col.find({})
+    const userId = req.query._id || req.body.decoded._id;
+
+    if (!ObjectId.isValid(userId)) {
+        res.status(403).send({ message: "Invalid user id" });
+        return;
+    }
+
+    const cursor = col.find({ authorId: new ObjectId(userId) })
         .sort({ _id: -1 })
         .limit(100);
     try {
-        let results = await cursor.toArray();
+        const results = await cursor.toArray();
         // console.log("results", results)
         res.send(results)
     } catch (e) {
@@ -79,10 +86,10 @@ router.post("/post", async (req, res) => {
         title: req.body.title,
         text: req.body.text,
         authorEmail: req.body.decoded.email,
+        authorId: req.body.decoded._id,
         createdOn: new Date()
     }
     try {
-
         const insertResponse = await col.insertOne(newPost);
         console.log("insertResponse", insertResponse);
         res.send({ message: "Post created" })
@@ -153,23 +160,31 @@ router.delete("/post/:postId", async (req, res) => {
     }
 })
 
-router.get("/profile", async (req, res) => {
+const getProfileMiddleware = async (req, res) => {
+    const userId = req.params.userId || req.body.decoded._id;
+    if (!ObjectId.isValid(userId)) {
+        res.status(403).send({ message: "Invalid user id" });
+        return;
+    }
+
     try {
-        const result = await userCollection.findOne({ email: req.body.decoded.email });
+        const result = await userCollection.findOne({ _id: new ObjectId(userId) });
+        console.log(result)
         res.send({
             message: "Profile fetched",
             data: {
-                isAdmin: result.isAdmin,
-                firstName: result.firstName,
-                lastName: result.lastName,
-                email: result.email,
+                isAdmin: result?.isAdmin,
+                firstName: result?.firstName,
+                lastName: result?.lastName,
+                email: result?.email,
             }
         });
     } catch (e) {
         console.log("error getting data mongodb: ", e);
         res.status(500).send("server error, please try later");
     }
-})
-
+}
+router.get("/profile", getProfileMiddleware)
+router.get("/profile/:userId", getProfileMiddleware)
 
 export default router;
