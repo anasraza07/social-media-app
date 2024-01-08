@@ -43,9 +43,10 @@ router.get("/post/:postId", async (req, res) => {
     }
 })
 
-// GET /api/v1/posts?id=userId
+// GET /api/v1/posts?id=12345678987654367
 router.get("/posts", async (req, res) => {
-    const userId = req.query._id || req.body.decoded._id;
+    const userId = req.query.id || req.body.decoded._id;
+    // console.log(userId)
 
     if (!ObjectId.isValid(userId)) {
         res.status(403).send({ message: "Invalid user id" });
@@ -58,7 +59,7 @@ router.get("/posts", async (req, res) => {
     try {
         const results = await cursor.toArray();
         // console.log("results", results)
-        res.send(results)
+        res.send(results);
     } catch (e) {
         console.log("error getting data mongodb: ", e);
         res.send("server error, please try again later");
@@ -86,7 +87,7 @@ router.post("/post", async (req, res) => {
         title: req.body.title,
         text: req.body.text,
         authorEmail: req.body.decoded.email,
-        authorId: req.body.decoded._id,
+        authorId: new ObjectId(req.body.decoded._id),
         createdOn: new Date()
     }
     try {
@@ -169,7 +170,7 @@ const getProfileMiddleware = async (req, res) => {
 
     try {
         const result = await userCollection.findOne({ _id: new ObjectId(userId) });
-        console.log(result)
+        // console.log(result)
         res.send({
             message: "Profile fetched",
             data: {
@@ -177,6 +178,7 @@ const getProfileMiddleware = async (req, res) => {
                 firstName: result?.firstName,
                 lastName: result?.lastName,
                 email: result?.email,
+                _id: result?._id
             }
         });
     } catch (e) {

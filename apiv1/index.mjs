@@ -1,11 +1,14 @@
 import express from "express";
 import jwt from "jsonwebtoken"
 let router = express.Router();
+import { ObjectId } from "mongodb";
+import { userCollection } from "./routes/auth.mjs";
 
 import authRouter from "./routes/auth.mjs"
 import postRouter from "./routes/post.mjs"
 import feedRouter from "./routes/feed.mjs"
 import commentRouter from "./routes/comment.mjs"
+import unAuthProfileRouter from "./unAuthRoutes/profile.mjs"
 
 router.use(authRouter)
 

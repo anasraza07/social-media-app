@@ -24,12 +24,12 @@ const Profile = () => {
     const getAllPosts = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`${baseUrl}/api/v1/posts?_id=${userId || ""}`, {
+            const response = await axios.get(`${baseUrl}/api/v1/posts?id=${userId || ""}`, {
                 withCredentials: true
             });
             console.log(response.data)
             setIsLoading(false)
-            setAllPosts(response.data)
+            setAllPosts([...response.data])
         } catch (e) {
             console.log(e.response.data)
             setIsLoading(false)
@@ -119,20 +119,24 @@ const Profile = () => {
                     <h2> {profile?.firstName} {profile?.lastName} </h2>
                 </div>
             </div>
-            <form onSubmit={submitHandler}>
-                <label htmlFor="postTitleInput">Post Title:</label>
-                <input type="text" id="postTitleInput" ref={postTitleInputRef} minLength={2} maxLength={50} required />
-                <br />
-                <label htmlFor="postTextInput">Post Text:</label>
-                <textarea id="postTextInput" ref={postTextInputRef} minLength={2} maxLength={999} required />
-                <br />
-                <button type="submit">Publish Post</button>
-            </form>
-            <p>
-                {alertMessage && alertMessage}
-                {isLoading && "Loading..."}
-            </p>
-            <hr />
+            {state.user._id === userId ? (
+                <div>
+                    <form onSubmit={submitHandler}>
+                        <label htmlFor="postTitleInput">Post Title:</label>
+                        <input type="text" id="postTitleInput" ref={postTitleInputRef} minLength={2} maxLength={50} required />
+                        <br />
+                        <label htmlFor="postTextInput">Post Text:</label>
+                        <textarea id="postTextInput" ref={postTextInputRef} minLength={2} maxLength={999} required />
+                        <br />
+                        <button type="submit">Publish Post</button>
+                    </form>
+                    <p>
+                        {alertMessage && alertMessage}
+                        {isLoading && "Loading..."}
+                    </p>
+                    <hr />
+                </div>
+            ) : null}
 
             <div>
                 {allPosts.map((post, index) => {
@@ -170,7 +174,8 @@ const Profile = () => {
                     )
                 })}
             </div>
-        </div>
+            {allPosts.length === 0 && (<div>No Data</div>)}
+        </div >
     )
 }
 

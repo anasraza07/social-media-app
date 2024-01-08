@@ -26,7 +26,7 @@ router.post("/signup", async (req, res) => {
 
     try {
         const result = await userCollection.findOne({ email: req.body.email })
-        console.log("result: ", result)
+        // console.log("result: ", result)
 
         if (!result) { // user not found
 
@@ -66,7 +66,7 @@ router.post("/login", async (req, res) => {
     }
     try {
         const result = await userCollection.findOne({ email: req.body.email })
-        console.log("result: ", result)
+        // console.log("result: ", result)
 
         if (!result) { // user not found
             res.status(403).send({
@@ -102,6 +102,7 @@ router.post("/login", async (req, res) => {
                         firstName: result.firstName,
                         lastName: result.lastName,
                         email: req.body.email,
+                        _id: result._id,
                     }
                 })
                 return;
