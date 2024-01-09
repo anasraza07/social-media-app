@@ -13,7 +13,7 @@ router.get("/posts", async (req, res) => {
     const userId = req.query.id;
     // console.log(userId)
 
-    if (!ObjectId.isValid(userId)) {
+    if (!ObjectId.isValid(userId) && userId !== undefined) {
         res.status(403).send({ message: "Invalid user id" });
         return;
     }
@@ -31,9 +31,9 @@ router.get("/posts", async (req, res) => {
     }
 })
 
-const getProfileMiddleware = async (req, res) => {
+router.get("/profile/:userId", async (req, res) => {
     const userId = req.params.userId;
-    if (!ObjectId.isValid(userId)) {
+    if (!ObjectId.isValid(userId) && userId !== undefined) {
         res.status(403).send({ message: "Invalid user id" });
         return;
     }
@@ -44,20 +44,20 @@ const getProfileMiddleware = async (req, res) => {
         res.send({
             message: "Profile fetched",
             data: {
-                isAdmin: result?.isAdmin,
                 firstName: result?.firstName,
                 lastName: result?.lastName,
                 email: result?.email,
-                _id: result?._id
             }
         });
     } catch (e) {
         console.log("error getting data mongodb: ", e);
         res.status(500).send("server error, please try later");
     }
-}
+})
 
-router.get("/profile", getProfileMiddleware)
-router.get("/profile/:userId", getProfileMiddleware)
+router.use((req, res) => {
+    res.status(401).send({ message: "Invalid token" })
+    return;
+})
 
 export default router;

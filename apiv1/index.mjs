@@ -27,12 +27,13 @@ router.use((req, res, next) => { // JWT
             _id: decoded._id,
             isAdmin: decoded.isAdmin
         };
-
         next();
 
     } catch (err) {
         // console.log(err)
-        res.status(401).send({ message: "Invalid token" })
+        unAuthProfileRouter(req, res, next);
+        // res.status(401).send({ message: "Invalid token" });
+        return;
     }
 })
 
