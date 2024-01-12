@@ -93,17 +93,17 @@ const Home = () => {
     }
 
     return (
-        <div>
-            <h1>Home Page (Your Feed)</h1>
+        <div className="m-5">
+            {/* <h1 className="text-center text-3xl font-bold">Home Page (Your Feed)</h1> */}
+            <h1 className="my-2 text-2xl font-semibold">Publish Your Post</h1>
             <form onSubmit={submitHandler}>
-                <h2 style={{ textAlign: "center", margin: "10px 0" }}>Publish Your Post</h2>
-                <label htmlFor="postTitleInput">Post Title:</label>
-                <input type="text" id="postTitleInput" ref={postTitleInputRef} minLength={2} maxLength={50} required />
+                <label className="block mb-2 text-lg font-medium text-indigo-600 my-1" htmlFor="postTitleInput">Post Title:</label>
+                <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="text" id="postTitleInput" ref={postTitleInputRef} minLength={2} maxLength={50} placeholder="Enter Your Title..." required />
                 <br />
-                <label htmlFor="postTextInput">Post Text:</label>
-                <textarea id="postTextInput" ref={postTextInputRef} minLength={2} maxLength={999} required />
+                <label className="block mb-2 text-lg font-medium text-indigo-500 my-1" htmlFor="postTextInput">Post Text:</label>
+                <textarea className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg  block w-full p-2.5 focus:outline-none focus:border-2 focus:border-indigo-300 " id="postTextInput" ref={postTextInputRef} minLength={2} maxLength={999} placeholder="Enter Some Text..." required rows={3} />
                 <br />
-                <button type="submit">Publish Post</button>
+                <button type="submit" className="p-1 mb-4 bg-indigo-500 text-white border-2 border-indigo-500 rounded-md hover:bg-indigo-600 font-medium">Publish Post</button>
             </form>
             <p>
                 {alertMessage && alertMessage}
@@ -111,7 +111,7 @@ const Home = () => {
             </p>
             <hr />
 
-            <div>
+            <div className="py-4">
                 {allPosts.map((post, index) => {
                     return (
                         <div key={post._id} className="post">
@@ -132,15 +132,18 @@ const Home = () => {
                                     {isLoading && "Loading..."}
                                 </form>
                             ) : (
-                                <div>
-                                    <p>{post.authorEmail}</p>
-                                    <h2>{post.title}</h2>
-                                    <p>{post.text}</p>
+                                <div className="bg-white m-4 p-4 shadow-md">
+                                    <div className="flex items-center gap-2 mb-6">
+                                        <div className="w-10 h-10 bg-indigo-200 rounded-full"></div>
+                                        <p className="font-medium my-2">{post.authorEmail}</p>
+                                    </div>
+                                    <h2 className="text-2xl font-bold my-2">{post.title}</h2>
+                                    <p className="text-lg font-medium my-2">{post.text}</p>
                                     <button onClick={() => {
                                         allPosts[index].isEdit = true
                                         setAllPosts([...allPosts])
-                                    }}>Edit</button>
-                                    <button onClick={() => deletePostHandler(post._id)}>Delete</button>
+                                    }} className="p-1 px-2 bg-blue-500 text-white border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 font-medium my-4">Edit</button>
+                                    <button onClick={() => deletePostHandler(post._id)} className="p-1 px-2 bg-red-500 text-white border-2 border-red-500 rounded-md hover:bg-red-600 hover:border-red-600 font-medium my-4 ml-1">Delete</button>
                                 </div>
                             )}
                         </div>
