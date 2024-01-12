@@ -53,31 +53,33 @@ const Signup = () => {
         }
     }
 
-    return <div>
-        <h1>Signup Page</h1>
-        <h2>{state.name}</h2>
-        <form onSubmit={signupSubmitHandler}>
-            <label htmlFor="firstNameInput">First Name: </label>
-            <input type="text" id="firstNameInput" ref={firstNameInputRef} required />
-            <br />
-            <label htmlFor="lastNameInput">Last Name: </label>
-            <input type="text" id="lastNameInput" ref={lastNameInputRef} required />
-            <br />
-            <label htmlFor="emailInput">Email: </label>
-            <input type="email" id="emailInput" ref={emailInputRef} required />
-            <br />
-            <label htmlFor="passwordInput">Password: </label>
-            <input type="password" id="passwordInput" ref={passwordInputRef} required />
-            <br />
-            <label htmlFor="repeatPasswordInput">Repeat Password: </label>
-            <input type="password" id="repeatPasswordInput" ref={repeatPasswordInputRef} required />
-            <br />
-            {passwordError && <p className="password-error">{passwordError}</p>}
-            <button type="submit">Signup</button>
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
-            {alertMessage && <p className="alert-message">{alertMessage}</p>}
-        </form>
-    </div>
+    return (
+        <div className="p-3">
+            <h1 className="my-5 text-2xl font-semibold">Signup Page</h1>
+            <h2>{state.name}</h2>
+            <form onSubmit={signupSubmitHandler}>
+                <label htmlFor="firstNameInput" className="block mb-2 text-lg font-medium text-indigo-600 my-1">First Name: </label>
+                <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="text" id="firstNameInput" ref={firstNameInputRef} required />
+                <br />
+                <label htmlFor="lastNameInput" className="block mb-2 text-lg font-medium text-indigo-600 my-1">Last Name: </label>
+                <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="text" id="lastNameInput" ref={lastNameInputRef} required />
+                <br />
+                <label htmlFor="emailInput" className="block mb-2 text-lg font-medium text-indigo-600 my-1">Email: </label>
+                <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="email" id="emailInput" ref={emailInputRef} required />
+                <br />
+                <label htmlFor="passwordInput" className="block mb-2 text-lg font-medium text-indigo-600 my-1">Password: </label>
+                <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="password" id="passwordInput" ref={passwordInputRef} required />
+                <br />
+                <label htmlFor="repeatPasswordInput" className="block mb-2 text-lg font-medium text-indigo-600 my-1">Repeat Password: </label>
+                <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="password" id="repeatPasswordInput" ref={repeatPasswordInputRef} required />
+                <br />
+                {passwordError && <p className="password-error">{passwordError}</p>}
+                <button className="p-1 my-4 bg-indigo-500 text-white border-2 border-indigo-500 rounded-md hover:bg-indigo-600 font-medium" type="submit">Signup</button>
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
+                {alertMessage && <p className="alert-message">{alertMessage}</p>}
+            </form>
+        </div>
+    )
 }
 
 export default Signup;

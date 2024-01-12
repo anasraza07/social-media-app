@@ -102,7 +102,7 @@ function App() {
             </ul>
             <div className="flex items-center gap-1">
               <div className="font-semibold">{state.user.email}</div>
-              <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium">Logout</button>
+              <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium" onClick={logoutSubmitHandler}>Logout</button>
             </div>
           </nav>
 
@@ -120,10 +120,10 @@ function App() {
       {/* unAuth routes */}
       {state.isLogin === false ? (
         <div>
-          <nav>
-            <ul className="unAuth-ul">
-              <li><Link to={"/login"}>Login</Link></li>
-              <li><Link to={"/signup"}>Signup</Link></li>
+          <nav className="my-5 p-3 items-center sm:pl-10 sm:flex-col sm:gap-5 sm:items-center md:flex-row">
+            <ul className="unAuth-ul flex justify-end    gap-3">
+              <li className="p-1 bg-transparent text-indigo-500 rounded-md border-2 border-indigo-500 hover:text-white hover:bg-indigo-500 font-medium"><Link to={"/login"}>Login</Link></li>
+              <li className="p-1 bg-transparent text-indigo-500 rounded-md border-2 border-indigo-500 hover:text-white hover:bg-indigo-500 font-medium"><Link to={"/signup"}>Signup</Link></li>
             </ul>
           </nav>
 
