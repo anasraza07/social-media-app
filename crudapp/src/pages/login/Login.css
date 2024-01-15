@@ -12,3 +12,8 @@
 .post h2 {
     font-size: 2rem;
 } */
+
+.errorMessage{
+    color: red;
+    font-size: 0.8rem;
+}

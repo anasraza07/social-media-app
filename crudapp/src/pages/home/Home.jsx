@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./Home.css"
 
 import { baseUrl } from "../../core";
+import { GlobalContext } from "../../context/Context";
 
 const Home = () => {
     const postTitleInputRef = useRef(null);
@@ -13,6 +14,8 @@ const Home = () => {
     const [allPosts, setAllPosts] = useState([]);
     const [toggleRefresh, setToggleRefresh] = useState(false);
     // const [editAlertMessage, setEditAlertMessage] = useState(false);
+
+    const { state, dispatch } = useContext(GlobalContext);
 
 
     const getAllPosts = async () => {
@@ -95,7 +98,7 @@ const Home = () => {
     return (
         <div className="p-5">
             {/* <h1 className="text-center text-3xl font-bold">Home Page (Your Feed)</h1> */}
-            <h1 className="my-2 text-2xl font-semibold">Publish Your Post</h1>
+            <h1 className="my-2 text-center text-2xl font-semibold">Publish Your Post</h1>
             <form onSubmit={submitHandler}>
                 <label className="block mb-2 text-lg font-medium text-indigo-600 my-1" htmlFor="postTitleInput">Post Title:</label>
                 <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5 mb-1" type="text" id="postTitleInput" ref={postTitleInputRef} minLength={2} maxLength={50} placeholder="Enter Your Title..." required />
@@ -115,23 +118,23 @@ const Home = () => {
                 {allPosts.map((post, index) => {
                     return (
                         <div key={post._id} className="post">
-                        {(post.isEdit) ? (
-                            <div className="bg-white m-4 p-4 shadow-md">
-                                <form onSubmit={saveEditPostHandler}>
-                                    <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="text" value={post._id} disabled hidden />
-                                    <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="text" placeholder="Enter post title" defaultValue={post.title} required />
-                                    <br />
-                                    <textarea className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5 mt-2" type="text" placeholder="Enter post text" defaultValue={post.text} required rows={3}
-                                    ></textarea>
-                                    <br />
-                                    <button className="p-1 px-2 bg-blue-500 text-white border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 font-medium my-4">Save</button>
-                                    <button className="p-1 px-2 bg-transparent text-blue-500 border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 hover:text-white font-medium my-4 ml-1" type="button" onClick={() => {
-                                        post.isEdit = false;
-                                        setAllPosts([...allPosts]);
-                                    }}>Cancel</button>
-                                    {alertMessage && alertMessage}
-                                    {isLoading && "Loading..."}
-                                </form>
+                            {(post.isEdit) ? (
+                                <div className="bg-white m-4 p-4 shadow-md">
+                                    <form onSubmit={saveEditPostHandler}>
+                                        <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="text" value={post._id} disabled hidden />
+                                        <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="text" placeholder="Enter post title" defaultValue={post.title} required />
+                                        <br />
+                                        <textarea className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5 mt-2" type="text" placeholder="Enter post text" defaultValue={post.text} required rows={3}
+                                        ></textarea>
+                                        <br />
+                                        <button className="p-1 px-2 bg-blue-500 text-white border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 font-medium my-4">Save</button>
+                                        <button className="p-1 px-2 bg-transparent text-blue-500 border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 hover:text-white font-medium my-4 ml-1" type="button" onClick={() => {
+                                            post.isEdit = false;
+                                            setAllPosts([...allPosts]);
+                                        }}>Cancel</button>
+                                        {alertMessage && alertMessage}
+                                        {isLoading && "Loading..."}
+                                    </form>
                                 </div>
                             ) : (
                                 <div className="bg-white m-4 p-4 shadow-md">
@@ -141,11 +144,15 @@ const Home = () => {
                                     </div>
                                     <h2 className="text-2xl font-bold my-2">{post.title}</h2>
                                     <p className="text-lg font-medium my-2">{post.text}</p>
-                                    <button onClick={() => {
-                                        allPosts[index].isEdit = true
-                                        setAllPosts([...allPosts])
-                                    }} className="p-1 px-2 bg-blue-500 text-white border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 font-medium my-4">Edit</button>
-                                    <button onClick={() => deletePostHandler(post._id)} className="p-1 px-2 bg-red-500 text-white border-2 border-red-500 rounded-md hover:bg-red-600 hover:border-red-600 font-medium my-4 ml-1">Delete</button>
+                                    {state.user._id === post.authorId ? (
+                                        <>
+                                            <button onClick={() => {
+                                                allPosts[index].isEdit = true
+                                                setAllPosts([...allPosts])
+                                            }} className="p-1 px-2 bg-blue-500 text-white border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 font-medium my-4">Edit</button>
+                                            <button onClick={() => deletePostHandler(post._id)} className="p-1 px-2 bg-red-500 text-white border-2 border-red-500 rounded-md hover:bg-red-600 hover:border-red-600 font-medium my-4 ml-1">Delete</button>
+                                        </>
+                                    ) : null}
                                 </div>
                             )}
                         </div>

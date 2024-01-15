@@ -1,13 +1,13 @@
-/* .password-error {
+.passwordError {
     color: red;
     font-size: 0.8rem;
 }
 
-.alert-message {
+.alertMessage {
     font-size: 0.9rem;
 }
 
-.error-message {
+.errorMessage {
     color: red;
     font-size: 0.9rem;
-} */
+}

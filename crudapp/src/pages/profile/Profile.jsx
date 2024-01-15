@@ -27,11 +27,11 @@ const Profile = () => {
             const response = await axios.get(`${baseUrl}/api/v1/posts?id=${userId || ""}`, {
                 withCredentials: true
             });
-            console.log(response.data)
+            console.log(response?.data)
             setIsLoading(false)
             setAllPosts([...response.data])
         } catch (e) {
-            console.log(e.response.data)
+            console.log(e.response?.data)
             setIsLoading(false)
         }
     }
@@ -110,25 +110,26 @@ const Profile = () => {
     }
 
     return (
-        <div>
-            <h1>Profile Page</h1>
+        <div className="p-5">
+            {/* <h1 className="my-2 text-2xl font-semibold">Profile Page</h1> */}
             <div className="banner">
                 <div className="bannerImg"></div>
                 <div className="profileImg"></div>
                 <div className="profileName">
-                    <h2> {profile?.firstName} {profile?.lastName} </h2>
+                    <h2 className="mb-4 text-2xl text-end font-bold capitalize text-indigo-800"> {profile?.firstName} {profile?.lastName} </h2>
+                    <hr />
                 </div>
             </div>
             {state.user._id === userId ? (
                 <div>
                     <form onSubmit={submitHandler}>
-                        <label htmlFor="postTitleInput">Post Title:</label>
-                        <input type="text" id="postTitleInput" ref={postTitleInputRef} minLength={2} maxLength={50} required />
+                        <label className="block mb-2 text-lg font-medium text-indigo-600 my-1" htmlFor="postTitleInput">Post Title:</label>
+                        <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5 mb-1" type="text" id="postTitleInput" ref={postTitleInputRef} minLength={2} maxLength={50} required />
                         <br />
-                        <label htmlFor="postTextInput">Post Text:</label>
-                        <textarea id="postTextInput" ref={postTextInputRef} minLength={2} maxLength={999} required />
+                        <label className="block mb-2 text-lg font-medium text-indigo-500 my-1" htmlFor="postTextInput">Post Text:</label>
+                        <textarea className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg  block w-full p-2.5 focus:outline-none focus:border-2 focus:border-indigo-300" id="postTextInput" ref={postTextInputRef} minLength={2} maxLength={999} required />
                         <br />
-                        <button type="submit">Publish Post</button>
+                        <button className="p-1 mb-4 bg-indigo-500 text-white border-2 border-indigo-500 rounded-md hover:bg-indigo-600 font-medium" type="submit">Publish Post</button>
                     </form>
                     <p>
                         {alertMessage && alertMessage}
@@ -139,35 +140,41 @@ const Profile = () => {
             ) : null}
 
             <div>
+                <h3 className="mt-3 text-center font-semibold text-xl">Your Posts</h3>
                 {allPosts.map((post, index) => {
                     return (
                         <div key={post._id} className="post">
                             {(post.isEdit) ? (
-                                <form onSubmit={saveEditPostHandler}>
-                                    <input type="text" value={post._id} disabled hidden />
-                                    <input type="text" placeholder="Enter post title" defaultValue={post.title} required />
-                                    <br />
-                                    <textarea type="text" placeholder="Enter post text" defaultValue={post.text} required
-                                    ></textarea>
-                                    <br />
-                                    <button type="submit">Save</button>
-                                    <button type="button" onClick={() => {
-                                        post.isEdit = false;
-                                        setAllPosts([...allPosts]);
-                                    }}>Cancel</button>
-                                    {alertMessage && alertMessage}
-                                    {isLoading && "Loading..."}
-                                </form>
+                                <div className="bg-white m-4 p-4 shadow-md">
+                                    <form onSubmit={saveEditPostHandler}>
+                                        <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="text" value={post._id} disabled hidden />
+                                        <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="text" placeholder="Enter post title" defaultValue={post.title} required />
+                                        <br />
+                                        <textarea className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5 mt-2" type="text" placeholder="Enter post text" defaultValue={post.text} required
+                                        ></textarea>
+                                        <br />
+                                        <button className="p-1 px-2 bg-blue-500 text-white border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 font-medium my-4" type="submit">Save</button>
+                                        <button className="p-1 px-2 bg-transparent text-blue-500 border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 hover:text-white font-medium my-4 ml-1" type="button" onClick={() => {
+                                            post.isEdit = false;
+                                            setAllPosts([...allPosts]);
+                                        }}>Cancel</button>
+                                        {alertMessage && alertMessage}
+                                        {isLoading && "Loading..."}
+                                    </form>
+                                </div>
                             ) : (
-                                <div>
-                                    <p>{post.authorEmail}</p>
-                                    <h2>{post.title}</h2>
-                                    <p>{post.text}</p>
-                                    <button onClick={() => {
+                                <div className="bg-white m-4 p-4 shadow-md">
+                                    <div className="flex flex-wrap items-center gap-2 mb-6">
+                                        <div className="w-10 h-10 bg-indigo-200 rounded-full"></div>
+                                        <p className="font-medium text-indigo-800">{post.authorEmail}</p>
+                                    </div>
+                                    <h2 className="text-2xl font-bold my-2">{post.title}</h2>
+                                    <p className="text-lg font-medium my-2">{post.text}</p>
+                                    <button className="p-1 px-2 bg-blue-500 text-white border-2 border-blue-500 rounded-md hover:bg-blue-600 hover:border-blue-600 font-medium my-4" onClick={() => {
                                         allPosts[index].isEdit = true
                                         setAllPosts([...allPosts])
                                     }}>Edit</button>
-                                    <button onClick={() => deletePostHandler(post._id)}>Delete</button>
+                                    <button className="p-1 px-2 bg-red-500 text-white border-2 border-red-500 rounded-md hover:bg-red-600 hover:border-red-600 font-medium my-4 ml-1" onClick={() => deletePostHandler(post._id)}>Delete</button>
                                 </div>
                             )}
                         </div>

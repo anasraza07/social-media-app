@@ -1,4 +1,5 @@
-import { useRef, useContext, useState } from "react";
+import { useRef, useContext, useState, useEffect } from "react";
+import { Routes, Route, Link, Navigate } from "react-router-dom"
 import "./Login.css"
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -13,6 +14,14 @@ const Login = () => {
     const passwordInputRef = useRef(null);
 
     const [alertMessage, setAlertMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setAlertMessage("")
+            setErrorMessage("")
+        }, 3000)
+    }, [alertMessage, errorMessage])
 
     const loginSubmitHandler = async (e) => {
         e.preventDefault();
@@ -56,15 +65,16 @@ const Login = () => {
             }, 1000)
         } catch (e) {
             console.log(e.response.data)
+            setErrorMessage(e.response.data.message)
         }
     }
 
     return (
         <div className="p-3">
-            <h1 className="my-5 text-2xl font-semibold">Login Page</h1>
+            <h1 className="my-5 text-2xl text-center font-semibold">Login Page</h1>
             {/* <h2>{state.name} <button onClick={changeNameHandler}>Change name</button></h2> */}
             {/* JSON.stringify(state) */}
-            <form id="loginForm" onSubmit={loginSubmitHandler}>
+            <form className="w-full sm:w-6/12 sm:m-auto" id="loginForm" onSubmit={loginSubmitHandler}>
                 <label htmlFor="emailInput" className="block mb-2 text-lg font-medium text-indigo-600 my-1">Email: </label>
                 <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="email" id="emailInput" ref={emailInputRef} autoComplete="username" required />
                 <br />
@@ -73,6 +83,8 @@ const Login = () => {
                 <br />
                 <button className="p-1 my-4 bg-indigo-500 text-white border-2 border-indigo-500 rounded-md hover:bg-indigo-600 font-medium" type="submit">Login</button>
                 {alertMessage && <p>{alertMessage}</p>}
+                {errorMessage && <p className="errorMessage">{errorMessage}</p>}
+                <p className="text-center mt-2">Don't have an account? <Link className="font-bold text-indigo-500" to={"/signup"}> Sign up </Link></p>
             </form>
         </div>
     )

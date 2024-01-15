@@ -70,7 +70,7 @@ router.post("/login", async (req, res) => {
 
         if (!result) { // user not found
             res.status(403).send({
-                message: "email or password is incorrect"
+                message: "Email or password is incorrect!"
             })
             return;
         } else { // user found
@@ -96,7 +96,7 @@ router.post("/login", async (req, res) => {
                 })
 
                 res.send({
-                    message: "Login successful",
+                    message: "Login successful!",
                     data: {
                         isAdmin: result.isAdmin,
                         firstName: result.firstName,
@@ -108,7 +108,7 @@ router.post("/login", async (req, res) => {
                 return;
             } else {
                 res.status(401).send({
-                    message: "email or password is incorrect"
+                    message: "Email or password is incorrect!"
                 })
                 return;
             }
