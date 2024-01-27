@@ -2,6 +2,8 @@ import { useEffect, useRef, useContext, useState } from "react"
 import { Routes, Route, Link, Navigate } from "react-router-dom"
 import "./Signup.css"
 import axios from "axios";
+import { toast } from "react-toastify";
+import ClipLoader from "react-spinners/ClipLoader";
 
 import { GlobalContext } from "../../context/Context";
 import { baseUrl } from "../../core";
@@ -18,6 +20,7 @@ const Signup = () => {
     const [passwordError, setPasswordError] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [alertMessage, setAlertMessage] = useState("");
+    const [loader, setLoader] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
@@ -36,16 +39,28 @@ const Signup = () => {
             } else {
                 setPasswordError("");
             }
-
-            const axiosResponse = await axios.post(`${baseUrl}/api/v1/signup`, {
-                firstName: firstNameInputRef.current.value,
-                lastName: lastNameInputRef.current.value,
-                email: emailInputRef.current.value,
-                password: passwordInputRef.current.value
+            setLoader(true);
+            const response = await new Promise((resolve) => {
+                setTimeout(async () => {
+                    resolve(
+                        await axios.post(`${baseUrl}/api/v1/signup`, {
+                            firstName: firstNameInputRef.current.value,
+                            lastName: lastNameInputRef.current.value,
+                            email: emailInputRef.current.value,
+                            password: passwordInputRef.current.value
+                        })
+                    )
+                }, 1000)
             })
-            console.log(axiosResponse.data);
-            window.location.href = "/login"
-            setAlertMessage(axiosResponse.data.message)
+            setLoader(false)
+            toast.success(`${response?.data.message}`, {
+                position: "bottom-center", autoClose: 500,
+                onClose: () => {
+                    window.location.href = "/login"
+                }
+            })
+            console.log(response.data);
+            setAlertMessage(response.data.message)
 
         } catch (e) {
             console.log(e.response.data)
@@ -74,6 +89,9 @@ const Signup = () => {
                 <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="password" id="repeatPasswordInput" ref={repeatPasswordInputRef} required />
                 {/* <br /> */}
                 <button className="p-1 my-4 bg-indigo-500 text-white border-2 border-indigo-500 rounded-md hover:bg-indigo-600 font-medium" type="submit">Signup</button>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <ClipLoader color="black" loading={loader} size={30} />
+                </div>
                 {passwordError && <p className="passwordError">{passwordError}</p>}
                 {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                 {alertMessage && <p className="alertMessage">{alertMessage}</p>}

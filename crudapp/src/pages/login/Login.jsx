@@ -2,7 +2,8 @@ import { useRef, useContext, useState, useEffect } from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom"
 import "./Login.css"
 import axios from "axios";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import ClipLoader from "react-spinners/ClipLoader"
 
 import { GlobalContext } from "../../context/Context";
 import { baseUrl } from "../../core";
@@ -15,6 +16,7 @@ const Login = () => {
 
     const [alertMessage, setAlertMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [loader, setLoader] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
@@ -27,42 +29,30 @@ const Login = () => {
         e.preventDefault();
         state.isLogin = null;
         try {
-            const response = await axios.post(`${baseUrl}/api/v1/login`, {
-                email: emailInputRef.current.value,
-                password: passwordInputRef.current.value
-            }, {
-                withCredentials: true
+            setLoader(true);
+            const response = await new Promise((resolve) =>
+                setTimeout(async () => {
+                    resolve(
+                        await axios.post(`${baseUrl}/api/v1/login`, {
+                            email: emailInputRef.current.value,
+                            password: passwordInputRef.current.value,
+                        })
+                    );
+                }, 1000)
+            );
+            setLoader(false)
+            toast.success(`${response?.data.message}`, {
+                position: "bottom-center", autoClose: 500,
+                onClose: () => {
+                        dispatch({
+                        type: "USER_LOGIN",
+                        payload: response.data.data
+                    })
+                }
             })
             console.log(response.data)
-            setAlertMessage(response.data.message)
-            // let timerInterval;
-            // Swal.fire({
-            //     // title: "Auto close alert!",
-            //     html: "Login Successful",
-            //     timer: 1000,
-            //     timerProgressBar: true,
-            //     didOpen: () => {
-            //         Swal.showLoading();
-            //         // const timer = Swal.getPopup().querySelector("b");
-            //         timerInterval = setInterval(() => {
-            //             // timer.textContent = `${Swal.getTimerLeft()}`;
-            //         }, 100);
-            //     },
-            //     willClose: () => {
-            //         clearInterval(timerInterval);
-            //     }
-            // }).then((result) => {
-            //     /* Read more about handling dismissals below */
-            //     if (result.dismiss === Swal.DismissReason.timer) {
-            //         console.log("I was closed by the timer");
-            //     }
-            // });
-            setTimeout(() => {
-                dispatch({
-                    type: "USER_LOGIN",
-                    payload: response.data.data
-                })
-            }, 1000)
+            // setAlertMessage(response.data.message)
+
         } catch (e) {
             console.log(e.response.data)
             setErrorMessage(e.response.data.message)
@@ -81,7 +71,11 @@ const Login = () => {
                 <label htmlFor="passwordInput" className="block mb-2 text-lg font-medium text-indigo-600 my-1">Password: </label>
                 <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5" type="password" id="passwordInput" ref={passwordInputRef} required />
                 <br />
-                <button className="p-1 my-4 bg-indigo-500 text-white border-2 border-indigo-500 rounded-md hover:bg-indigo-600 font-medium" type="submit">Login</button>
+                <button className="p-1 my-4 bg-indigo-500 text-white border-2 border-indigo-500 rounded-md hover:bg-indigo-600 font-medium" type="submit" disabled={loader}>Login
+                </button>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <ClipLoader color="black" loading={loader} size={30} />
+                </div>
                 {alertMessage && <p>{alertMessage}</p>}
                 {errorMessage && <p className="errorMessage">{errorMessage}</p>}
                 <p className="text-center mt-2">Don't have an account? <Link className="font-bold text-indigo-500" to={"/signup"}> Sign up </Link></p>

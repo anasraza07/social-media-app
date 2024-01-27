@@ -28,7 +28,7 @@ const Home = () => {
             setIsLoading(false)
             setAllPosts(response.data.data)
         } catch (e) {
-            console.log(e.response.data)
+            console.log(e.response?.data)
             setIsLoading(false)
         }
     }

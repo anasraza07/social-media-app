@@ -2,6 +2,10 @@ import { useEffect, useState, useContext } from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom"
 import axios from "axios";
 import "./App.css"
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import ClipLoader from "react-spinners/ClipLoader"
+
 
 import Home from "./pages/home/Home";
 import About from "./pages/about/About"
@@ -14,8 +18,12 @@ import splashScreen from "./assets/splash-screen.gif"
 import { GlobalContext } from "./context/Context";
 import { baseUrl } from "./core";
 
+
 function App() {
+  const [loader, setLoader] = useState(null)
+
   const { state, dispatch } = useContext(GlobalContext)
+
 
   useEffect(() => {
     axios.interceptors.request.use(
@@ -53,12 +61,31 @@ function App() {
 
   const logoutSubmitHandler = async () => {
     try {
-      await axios.post(`${baseUrl}/api/v1/logout`, {}, {
-        withCredentials: true
-      })
-      dispatch({
-        type: "USER_LOGOUT"
-      })
+      // setLoader(true);
+      const response = await new Promise((resolve) => {
+        setTimeout(async () => {
+          resolve(
+            await axios.post(`${baseUrl}/api/v1/logout`, {}, {
+              withCredentials: true
+            })
+          )
+        }, 1000)
+      });
+      // setLoader(false)
+      toast(<div className="">
+        <ClipLoader color="black" loading={true} size={20} />
+        {/* {response.data.message} */} Logging out...</div>, {
+        autoClose: 1000,
+        onClose: () => {
+          // setTimeout(() => {
+          dispatch({
+            type: "USER_LOGOUT"
+          })
+          // }, 1000)
+
+        }
+      }
+      )
     } catch (e) {
       console.log(e)
     }
@@ -102,7 +129,9 @@ function App() {
             </ul>
             <div className="flex items-center gap-1">
               <div className="font-bold  text-indigo-800">{state.user.email}</div>
-              <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium" onClick={logoutSubmitHandler}>Logout</button>
+              {!loader ? <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium" onClick={logoutSubmitHandler}>Logout</button> : (<div>
+                <ClipLoader color="black" loading={true} size={30} />
+              </div>)}
             </div>
           </nav>
 
@@ -149,6 +178,7 @@ function App() {
           }} src={splashScreen} alt="" />
         </div>
       ) : null}
+      <ToastContainer className="" />
     </div>
   );
 }
