@@ -22,17 +22,17 @@ const Profile = () => {
     const { userId } = useParams()
 
     const getAllPosts = async () => {
-        setIsLoading(true);
+        // setIsLoading(true);
         try {
             const response = await axios.get(`${baseUrl}/api/v1/posts?id=${userId || ""}`, {
                 withCredentials: true
             });
             console.log(response?.data)
-            setIsLoading(false)
+            // setIsLoading(false)
             setAllPosts([...response.data])
         } catch (err) {
             console.log(err.response?.data)
-            setIsLoading(false)
+            // setIsLoading(false)
         }
     }
 
@@ -53,7 +53,7 @@ const Profile = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
+        // setIsLoading(true);
         try {
             const response = await axios.post(`${baseUrl}/api/v1/post`, {
                 title: postTitleInputRef.current.value,
@@ -62,29 +62,30 @@ const Profile = () => {
                 withCredentials: true
             })
             console.log(response.data);
-            setIsLoading(false);
+            // setIsLoading(false);
+            toast.success(`${response?.data.message}`, { autoClose: 1000 })
             // setAlertMessage(response.data.message)
             e.target.reset()
             // getAllPosts();
             setToggleRefresh(!toggleRefresh);
         } catch (e) {
             console.log(e.data)
-            setIsLoading(false)
+            // setIsLoading(false)
         }
     }
 
     const deletePostHandler = async (postId) => {
-        setIsLoading(true)
+        // setIsLoading(true)
         try {
             const response = await axios.delete(`${baseUrl}/api/v1/post/${postId}`)
             console.log(response.data);
-            setIsLoading(false);
+            // setIsLoading(false);
             toast.error(`${response?.data.message}`, { autoClose: 1000 })
             // setAlertMessage(response.data.message);
             setToggleRefresh(!toggleRefresh);
         } catch (err) {
             console.log(err.data);
-            setIsLoading(false)
+            // setIsLoading(false)
         }
     }
 
@@ -95,19 +96,20 @@ const Profile = () => {
         const title = e.target.elements[1].value;
         const text = e.target.elements[2].value;
 
-        setIsLoading(true)
+        // setIsLoading(true)
         try {
             const response = await axios.put(`${baseUrl}/api/v1/post/${_id}`, {
                 title,
                 text
             })
             console.log(response.data);
-            setIsLoading(false);
-            setAlertMessage(response.data.message);
+            // setIsLoading(false);
+            // setAlertMessage(response.data.message);
+            toast.error(`${response?.data.message}`, { autoClose: 1000 })
             setToggleRefresh(!toggleRefresh);
         } catch (e) {
             console.log(e.data);
-            setIsLoading(false)
+            // setIsLoading(false)
         }
     }
 
