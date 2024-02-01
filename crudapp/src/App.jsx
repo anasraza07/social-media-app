@@ -17,6 +17,7 @@ import splashScreen from "./assets/splash-screen.gif"
 
 import { GlobalContext } from "./context/Context";
 import { baseUrl } from "./core";
+import AdminHome from "./pages copy/admin home/AdminHome";
 
 
 function App() {
@@ -96,18 +97,20 @@ function App() {
       {/* admin routes */}
       {state.isLogin === true && state.role === "admin" ? (
         <div>
-          <nav>
-            <ul className="authorized-uls ">
-              <li><Link to={"/"}>Admin Home</Link></li>
-              <li><Link to={`/profile/${state.user._id}`}>Admin Profile</Link></li>
-              <li><Link to={"/chat"}>Admin Chat</Link></li>
-              {state.user.email}
-              <li className="logout" onClick={logoutSubmitHandler}><Link>Logout</Link></li>
+          <nav className="mb-3 py-5 flex flex-col gap-3 justify-between items-center bg-white sticky top-0 border-b-gray-300 border-b-2 sm:px-10 sm:flex-col sm:gap-5 sm:items-center md:flex-row">
+            <ul className="authorized-ul flex gap-2 sm:gap-4">
+              <li><Link className="p-1 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={"/"}>Admin Home</Link></li>
+              <li><Link className="p-1 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={`/profile/${state.user._id}`}>Admin Profile</Link></li>
+              <li><Link className="p-1 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={"/chat"}>Admin Chat</Link></li>
             </ul>
+              <div className="flex items-center gap-2">
+                <div className="font-bold  text-indigo-800">{state.user.email}</div>
+                <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium" onClick={logoutSubmitHandler}>Logout</button>
+              </div>
           </nav>
 
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<AdminHome />} />
             <Route path="about" element={<About />} />
             <Route path="profile/:userId" element={<Profile />} />
             <Route path="chat" element={<Chat />} />
@@ -120,20 +123,16 @@ function App() {
       {/* user routes */}
       {state.isLogin === true && state.role === "user" ? (
         <div>
-          <nav className="mb-3 py-5 flex flex-col gap-3 justify-between items-center bg-white sticky top-0 border-b-gray-300 border-2 sm:px-10 sm:flex-col sm:gap-5 sm:items-center md:flex-row">
-            <ul className="authorized-ul flex gap-2">
+          <nav className="mb-3 py-5 flex flex-col gap-3 justify-between items-center bg-white sticky top-0 border-b-gray-300 border-b-2 sm:px-10 sm:flex-col sm:gap-5 sm:items-center md:flex-row">
+            <ul className="authorized-ul flex gap-4">
               <li><Link className="p-1 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={"/"}>Home</Link></li>
               <li><Link className="p-1 sm:px-2 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={"/about"}>About</Link></li>
               <li><Link className="p-1 sm:px-2 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={`/profile/${state.user._id}`}>Profile</Link></li>
               <li><Link className="p-1 sm:px-2 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={"/chat"}>Chat</Link></li>
             </ul>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <div className="font-bold  text-indigo-800">{state.user.email}</div>
-              {/* {!loader ?  */}
               <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium" onClick={logoutSubmitHandler}>Logout</button>
-              {/* : (<div>
-                <ClipLoader color="black" loading={true} size={30} />
-              </div>)} */}
             </div>
           </nav>
 
