@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom"
 import axios from "axios";
 import "./App.css"
@@ -6,8 +6,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import ClipLoader from "react-spinners/ClipLoader"
 import "react-toastify/dist/ReactToastify.css";
 
-
 import Home from "./pages/home/Home";
+import AdminHome from "./pages copy/admin home/AdminHome";
 import About from "./pages/about/About"
 import Profile from "./pages/profile/Profile";
 import Chat from "./pages/chat/Chat";
@@ -17,14 +17,10 @@ import splashScreen from "./assets/splash-screen.gif"
 
 import { GlobalContext } from "./context/Context";
 import { baseUrl } from "./core";
-import AdminHome from "./pages copy/admin home/AdminHome";
 
 
 function App() {
-  // const [loader, setLoader] = useState(null)
-
   const { state, dispatch } = useContext(GlobalContext)
-
 
   useEffect(() => {
     axios.interceptors.request.use(
@@ -73,20 +69,17 @@ function App() {
         // }, 1000)
       });
       // setLoader(false)
-      toast(<div className="">
+      toast(<div className="flex items-center gap-2">
         <ClipLoader color="black" loading={true} size={20} />
-        {/* {response.data.message} */} Logging out...</div>, {
+        Logging out...</div>, {
         autoClose: 1000,
-        onClose: () => {
-          // setTimeout(() => {
-          dispatch({
+        onClose: async () => {
+          await dispatch({
             type: "USER_LOGOUT"
           })
-          // }, 1000)
-
+          window.location.href = "/"
         }
-      }
-      )
+      })
     } catch (err) {
       console.log(err)
     }
@@ -103,10 +96,10 @@ function App() {
               <li><Link className="p-1 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={`/profile/${state.user._id}`}>Admin Profile</Link></li>
               <li><Link className="p-1 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={"/chat"}>Admin Chat</Link></li>
             </ul>
-              <div className="flex items-center gap-2">
-                <div className="font-bold  text-indigo-800">{state.user.email}</div>
-                <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium" onClick={logoutSubmitHandler}>Logout</button>
-              </div>
+            <div className="flex items-center gap-2">
+              <div className="font-bold  text-indigo-800">{state.user.email}</div>
+              <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium" onClick={logoutSubmitHandler}>Logout</button>
+            </div>
           </nav>
 
           <Routes>
@@ -179,7 +172,7 @@ function App() {
           }} src={splashScreen} alt="" />
         </div>
       ) : null}
-      <ToastContainer className="sm:w-2/4 " />
+      <ToastContainer className="" />
     </div>
   );
 }

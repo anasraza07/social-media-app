@@ -85,20 +85,20 @@ const AdminHome = () => {
         const title = e.target.elements[1].value;
         const text = e.target.elements[2].value;
 
-        setIsLoading(true)
+        // setIsLoading(true)
         try {
             const response = await axios.put(`${baseUrl}/api/v1/post/${_id}`, {
                 title,
                 text
             })
             console.log(response.data);
-            setIsLoading(false);
+            // setIsLoading(false);
             toast.success(`${response?.data.message}`, { autoClose: 1000 })
             // setAlertMessage(response.data.message);
             setToggleRefresh(!toggleRefresh);
         } catch (err) {
             console.log(err.data);
-            setIsLoading(false)
+            // setIsLoading(false)
         }
     }
 
