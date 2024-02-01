@@ -3,8 +3,8 @@ import { Routes, Route, Link, Navigate } from "react-router-dom"
 import axios from "axios";
 import "./App.css"
 import { toast, ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader"
+import "react-toastify/dist/ReactToastify.css";
 
 
 import Home from "./pages/home/Home";
@@ -20,7 +20,7 @@ import { baseUrl } from "./core";
 
 
 function App() {
-  const [loader, setLoader] = useState(null)
+  // const [loader, setLoader] = useState(null)
 
   const { state, dispatch } = useContext(GlobalContext)
 
@@ -62,14 +62,14 @@ function App() {
   const logoutSubmitHandler = async () => {
     try {
       // setLoader(true);
-      const response = await new Promise((resolve) => {
-        setTimeout(async () => {
-          resolve(
-            await axios.post(`${baseUrl}/api/v1/logout`, {}, {
-              withCredentials: true
-            })
-          )
-        }, 1000)
+      await new Promise(async (resolve) => {
+        // setTimeout(async () => {
+        resolve(
+          await axios.post(`${baseUrl}/api/v1/logout`, {}, {
+            withCredentials: true
+          })
+        )
+        // }, 1000)
       });
       // setLoader(false)
       toast(<div className="">
@@ -86,8 +86,8 @@ function App() {
         }
       }
       )
-    } catch (e) {
-      console.log(e)
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -120,7 +120,7 @@ function App() {
       {/* user routes */}
       {state.isLogin === true && state.role === "user" ? (
         <div>
-          <nav className="mt-5 mb-3 py-5 flex flex-col gap-3 justify-between items-center sm:px-10 sm:flex-col sm:gap-5 sm:items-center md:flex-row">
+          <nav className="mb-3 py-5 flex flex-col gap-3 justify-between items-center bg-white sticky top-0 border-b-gray-300 border-2 sm:px-10 sm:flex-col sm:gap-5 sm:items-center md:flex-row">
             <ul className="authorized-ul flex gap-2">
               <li><Link className="p-1 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={"/"}>Home</Link></li>
               <li><Link className="p-1 sm:px-2 bg-indigo-500 text-white rounded-md border-2 border-indigo-500 hover:bg-transparent hover:text-indigo-500 font-medium" to={"/about"}>About</Link></li>
@@ -129,9 +129,11 @@ function App() {
             </ul>
             <div className="flex items-center gap-1">
               <div className="font-bold  text-indigo-800">{state.user.email}</div>
-              {!loader ? <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium" onClick={logoutSubmitHandler}>Logout</button> : (<div>
+              {/* {!loader ?  */}
+              <button className="p-1 sm:px-2 text-indigo-500 bg-transparent border-2 border-indigo-500 rounded-md hover:bg-indigo-500 hover:text-white font-medium" onClick={logoutSubmitHandler}>Logout</button>
+              {/* : (<div>
                 <ClipLoader color="black" loading={true} size={30} />
-              </div>)}
+              </div>)} */}
             </div>
           </nav>
 
@@ -178,7 +180,7 @@ function App() {
           }} src={splashScreen} alt="" />
         </div>
       ) : null}
-      <ToastContainer className="" />
+      <ToastContainer className="sm:w-2/4 " />
     </div>
   );
 }

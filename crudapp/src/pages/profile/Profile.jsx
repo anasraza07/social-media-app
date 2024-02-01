@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import axios from "axios";
 import "./Profile.css"
+import { toast } from "react-toastify";
 
 import { baseUrl } from "../../core";
 import { GlobalContext } from "../../context/Context";
@@ -13,10 +13,10 @@ const Profile = () => {
     const postTitleInputRef = useRef(null);
     const postTextInputRef = useRef(null);
 
-    const [isLoading, setIsLoading] = useState(false);
     const [alertMessage, setAlertMessage] = useState(null);
     const [allPosts, setAllPosts] = useState([]);
     const [toggleRefresh, setToggleRefresh] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [profile, setProfile] = useState({});
 
     const { userId } = useParams()
@@ -30,8 +30,8 @@ const Profile = () => {
             console.log(response?.data)
             setIsLoading(false)
             setAllPosts([...response.data])
-        } catch (e) {
-            console.log(e.response?.data)
+        } catch (err) {
+            console.log(err.response?.data)
             setIsLoading(false)
         }
     }
@@ -63,7 +63,8 @@ const Profile = () => {
             })
             console.log(response.data);
             setIsLoading(false);
-            setAlertMessage(response.data.message)
+            // setAlertMessage(response.data.message)
+            e.target.reset()
             // getAllPosts();
             setToggleRefresh(!toggleRefresh);
         } catch (e) {
@@ -78,10 +79,11 @@ const Profile = () => {
             const response = await axios.delete(`${baseUrl}/api/v1/post/${postId}`)
             console.log(response.data);
             setIsLoading(false);
-            setAlertMessage(response.data.message);
+            toast.error(`${response?.data.message}`, { autoClose: 1000 })
+            // setAlertMessage(response.data.message);
             setToggleRefresh(!toggleRefresh);
-        } catch (e) {
-            console.log(e.data);
+        } catch (err) {
+            console.log(err.data);
             setIsLoading(false)
         }
     }

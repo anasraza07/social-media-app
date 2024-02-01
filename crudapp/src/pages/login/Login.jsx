@@ -32,19 +32,25 @@ const Login = () => {
             setLoader(true);
             const response = await new Promise((resolve) =>
                 setTimeout(async () => {
-                    resolve(
-                        await axios.post(`${baseUrl}/api/v1/login`, {
-                            email: emailInputRef.current.value,
-                            password: passwordInputRef.current.value,
-                        })
-                    );
+                    try {
+                        resolve(
+                            await axios.post(`${baseUrl}/api/v1/login`, {
+                                email: emailInputRef.current.value,
+                                password: passwordInputRef.current.value,
+                            })
+                        )
+                    } catch (err) {
+                        setLoader(false)
+                        console.log(err)
+                        setErrorMessage(err.response?.data.message)
+                    }
                 }, 1000)
             );
             setLoader(false)
             toast.success(`${response?.data.message}`, {
                 position: "bottom-center", autoClose: 500,
                 onClose: () => {
-                        dispatch({
+                    dispatch({
                         type: "USER_LOGIN",
                         payload: response.data.data
                     })
@@ -54,6 +60,7 @@ const Login = () => {
             // setAlertMessage(response.data.message)
 
         } catch (e) {
+            setLoader(false)
             console.log(e.response.data)
             setErrorMessage(e.response.data.message)
         }

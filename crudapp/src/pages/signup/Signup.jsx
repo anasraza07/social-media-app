@@ -31,25 +31,31 @@ const Signup = () => {
 
     const signupSubmitHandler = async (e) => {
         e.preventDefault();
+        if (repeatPasswordInputRef.current.value !== passwordInputRef.current.value) {
+            console.log("Password don't match!")
+            setPasswordError("Password don't match!")
+            return;
+        } else {
+            setPasswordError("");
+        }
         try {
-            if (repeatPasswordInputRef.current.value !== passwordInputRef.current.value) {
-                console.log("Password don't match!")
-                setPasswordError("Password don't match!")
-                return;
-            } else {
-                setPasswordError("");
-            }
             setLoader(true);
             const response = await new Promise((resolve) => {
                 setTimeout(async () => {
-                    resolve(
-                        await axios.post(`${baseUrl}/api/v1/signup`, {
-                            firstName: firstNameInputRef.current.value,
-                            lastName: lastNameInputRef.current.value,
-                            email: emailInputRef.current.value,
-                            password: passwordInputRef.current.value
-                        })
-                    )
+                    try {
+                        resolve(
+                            await axios.post(`${baseUrl}/api/v1/signup`, {
+                                firstName: firstNameInputRef.current.value,
+                                lastName: lastNameInputRef.current.value,
+                                email: emailInputRef.current.value,
+                                password: passwordInputRef.current.value
+                            })
+                        )
+                    } catch (err) {
+                        setLoader(false)
+                        console.log(err)
+                        setErrorMessage(err.response?.data.message);
+                    }
                 }, 1000)
             })
             setLoader(false)
@@ -60,7 +66,7 @@ const Signup = () => {
                 }
             })
             console.log(response.data);
-            setAlertMessage(response.data.message)
+            // setAlertMessage(response.data.message)
 
         } catch (e) {
             console.log(e.response.data)
