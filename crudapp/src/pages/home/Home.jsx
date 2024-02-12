@@ -12,12 +12,14 @@ const Home = () => {
 
     const postTitleInputRef = useRef(null);
     const postTextInputRef = useRef(null);
+    const postFileInputRef = useRef(null);
 
     const [alertMessage, setAlertMessage] = useState(null);
     const [allPosts, setAllPosts] = useState([]);
     const [toggleRefresh, setToggleRefresh] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [alLPostsLoader, setAllPostsLoader] = useState(false);
+    const [imgPreview, setImgPreview] = useState(null)
 
     const getAllPosts = async () => {
         // setAllPostsLoader(true);
@@ -43,16 +45,23 @@ const Home = () => {
         e.preventDefault();
         // setIsLoading(true);
         try {
-            const response = await axios.post(`${baseUrl}/api/v1/post`, {
-                title: postTitleInputRef.current.value,
-                text: postTextInputRef.current.value
-            }, {
-                withCredentials: true
-            })
+            let formData = new FormData();
+
+            formData.append("title", postTitleInputRef.current.value);
+            formData.append("text", postTextInputRef.current.value);
+            formData.append("myFile", postFileInputRef.current.files[0]);
+
+            const response = await axios.post(`${baseUrl}/api/v1/post`,
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                })
+
             console.log(response.data);
             // setIsLoading(false);
             toast.success(`${response?.data.message}`, { autoClose: 1000 })
-            e.target.reset()
+            setImgPreview("");
+            e.target.reset();
             // text.reset()
             // setAlertMessage(response.data.message)
             // getAllPosts();
@@ -110,9 +119,23 @@ const Home = () => {
                 <label className="block mb-2 text-lg font-medium text-indigo-600 my-1" htmlFor="postTitleInput">Post Title:</label>
                 <input className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg focus:outline-none focus:border-2 focus:border-indigo-300 w-full p-2.5 mb-1" type="text" id="postTitleInput" ref={postTitleInputRef} minLength={2} maxLength={50} placeholder="Enter Your Title..." required />
                 <br />
+
                 <label className="block mb-2 text-lg font-medium text-indigo-500 my-1" htmlFor="postTextInput">Post Text:</label>
                 <textarea className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg  block w-full p-2.5 focus:outline-none focus:border-2 focus:border-indigo-300 " id="postTextInput" ref={postTextInputRef} minLength={2} maxLength={999} placeholder="Enter Some Text..." required rows={3} />
                 <br />
+
+                <label className="block mb-2 text-lg font-medium text-indigo-500 my-1" htmlFor="postFileInput">Upload Picture:</label>
+                <input type="file" accept="image/*" className="bg-white border border-gray-400 text-gray-900 text-lg rounded-lg  block w-full p-2.5 focus:outline-none focus:border-2 focus:border-indigo-300 " id="postFileInput" ref={postFileInputRef}
+                    onChange={(e) => {
+                        const baseUrl = URL.createObjectURL(e.target.files[0]);
+                        console.log("baseUrl", baseUrl)
+                        setImgPreview(baseUrl)
+                    }} />
+                {/* <br /> */}
+                <div className="my-4">
+                    {imgPreview && <img className="border-2 border-gray-500" width={150} src={imgPreview} alt="" />}
+                </div>
+
                 {!isLoading ? <button type="submit" className="p-1 mb-4 bg-indigo-500 text-white border-2 border-indigo-500 rounded-md hover:bg-indigo-600 font-medium">Publish Post</button>
                     : (<div>
                         <ClipLoader color="black" loading={true} size={30} />
@@ -161,6 +184,7 @@ const Home = () => {
                                         </div>
                                         <h2 className="text-2xl font-bold my-2">{post.title}</h2>
                                         <p className="text-lg font-medium my-2">{post.text}</p>
+                                        {post.img && <img src={post.img} alt="post img" width={100} className="m-auto" />}
                                         {state.user._id === post.authorId ? (
                                             <div className="flex items-center gap-1">
                                                 <button onClick={() => {
